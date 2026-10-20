@@ -271,8 +271,9 @@ def render(C):
 </section>'''
 
     def sec_gallery(s):
-        """Work samples as a responsive grid; every tile opens the lightbox. Items: dict(src, caption, wide=False, tall=False)."""
-        items = get('GALLERY', [])
+        """Work samples as a responsive grid; every tile opens the lightbox. Items: dict(src, caption, wide=False, tall=False),
+        from the section's own `items` (for a second gallery, e.g. paintings next to design work) or GALLERY."""
+        items = s.get('items', get('GALLERY', []))
         if not items: return ''
         tiles = ''.join(f'<figure class="gal-item{" wide" if g.get("wide") else ""}{" tall" if g.get("tall") else ""}" data-reveal style="--d:{(k%4)*0.08:.2f}s">{zoom_btn(asset(g["src"]), g["caption"], "zoom gal")}<figcaption>{e(g["caption"])}</figcaption></figure>' for k, g in enumerate(items))
         intro = f'<p class="lede">{e(s["intro"])}</p>' if s.get('intro') else ''

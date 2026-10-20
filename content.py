@@ -10,11 +10,11 @@ LINKEDIN = "https://www.linkedin.com/in/anna-liman-a863981b3/"
 
 PERSON = dict(
     name="Anna Liman", first="Anna", last="Liman", initials="AL",
-    title="Anna Liman · Grafikdesignerin &amp; Medienfachwirtin",   # <title> and og:title (already HTML-escaped)
-    description="Anna Liman, staatlich geprüfte Grafikdesignerin und Medienfachwirtin (Bachelor Professional) aus Walldorf. Arbeiten, Werdegang und Kontakt.",
-    badge="Grafikdesignerin · Medienfachwirtin",   # small pill above the name; None hides it
-    tagline="Gestaltung und Medienwirtschaft aus einer Hand.",
-    lede="Staatlich geprüfte Grafikdesignerin mit Weiterbildung zur Medienfachwirtin (Bachelor Professional), beides an der Johannes-Gutenberg-Schule in Heidelberg.",
+    title="Anna Liman · Grafikdesignerin",   # <title> and og:title (already HTML-escaped)
+    description="Anna Liman, staatlich geprüfte Grafikdesignerin aus Walldorf: Print, Web und Malerei. Arbeiten, Werdegang und Kontakt.",
+    badge="Staatlich geprüfte Grafikdesignerin",   # small pill above the name; None hides it
+    tagline="Grafikdesign für Print und Web. Und Malerei auf Leinwand.",
+    lede="Ich gestalte Speisekarten, Websites und alles dazwischen, in InDesign, Illustrator und Photoshop. Ausgebildet an der Johannes-Gutenberg-Schule Heidelberg, dort auch Medienfachwirtin (Bachelor Professional).",
     meta=["Walldorf · Rhein-Neckar", "DE C2 · EN B2 · UA Muttersprache"],
     location="Walldorf",
     # profile links: (label, url, icon name from src/icons.json or None). The first is the primary button.
@@ -40,27 +40,37 @@ THEME = dict(
     google_fonts="family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=Manrope:wght@400;500;600&family=DM+Mono:wght@400;500",
 )
 
-HERO_PHOTOS = [('assets/hero/anna.webp', 'Porträt von Anna Liman')]
+HERO_PHOTOS = [('assets/hero/anna-2.jpg', 'Porträt von Anna Liman'), ('assets/hero/anna.jpg', 'Porträt von Anna Liman')]
 STATS = []
 MARQUEE = []
 
 SECTIONS = [
-    dict(id="arbeiten", type="gallery", nav="Arbeiten", label="Arbeiten",
-         heading="Ausgewählte Arbeiten",
+    dict(id="arbeiten", type="gallery", nav="Design", label="Grafikdesign",
+         heading="Grafikdesign",
          intro="Veg & Velvet, ein Café: Speisekarte und Startseite der Website. Zum Vergrößern ein Bild anklicken."),
+    dict(id="malerei", type="gallery", nav="Malerei", label="Malerei",
+         heading="Malerei",
+         intro="Frühere freie Arbeiten auf Leinwand: Pop-Art, Landschaft und Porträt.",
+         items=[
+             dict(src="assets/work/malerei-popart-blond.jpg", caption="Pop-Art-Porträt in Gelb, auf Leinwand", tall=True),
+             dict(src="assets/work/malerei-popart-traenen.jpg", caption="Pop-Art-Porträt mit Tränen, auf Leinwand", tall=True),
+             dict(src="assets/work/malerei-bergsee.jpg", caption="Bergsee mit Spiegelung, auf Leinwand", tall=True),
+             dict(src="assets/work/malerei-blau.jpg", caption="Porträt in Blau, freie Arbeit auf Leinwand", tall=True),
+         ]),
     dict(id="ueber-mich", type="about", nav="Über mich", label="Über mich",
-         heading="Gestalten und planen.",
+         heading="Gestaltung ist mein Handwerk.",
          paragraphs=[
-             "Ich bin <strong>staatlich geprüfte Grafikdesignerin</strong> (Johannes-Gutenberg-Schule Heidelberg, 2023) und habe an derselben Schule die Weiterbildung zur <strong>Medienfachwirtin (Bachelor Professional)</strong> gemacht. Ich bringe damit beides mit: das gestalterische Handwerk und den Blick dafür, wie Medienprojekte geplant und umgesetzt werden.",
-             "Daneben habe ich anderthalb Jahre in einer Praxis für Gastroenterologie in Wiesloch gearbeitet, am Empfang und in der Betreuung von Patienten. Was ich mitbringe: Kommunikationsstärke, eine schnelle Auffassungsgabe und eine strukturierte Arbeitsweise.",
+             "Ich bin <strong>staatlich geprüfte Grafikdesignerin</strong> (Johannes-Gutenberg-Schule Heidelberg, 2023) und suche eine Stelle im Grafikdesign. Ich arbeite mit <strong>InDesign, Illustrator und Photoshop</strong>, zeichne digital in <strong>Procreate</strong> und habe Grundkenntnisse in Figma.",
+             "Neben dem Grafikdesign male ich auf Leinwand: Pop-Art, Landschaften und freie Porträts. Einige dieser Arbeiten zeige ich weiter oben.",
+             "Danach habe ich an derselben Schule die Weiterbildung zur <strong>Medienfachwirtin (Bachelor Professional)</strong> gemacht und kenne damit auch die Planung und Organisation von Medienprojekten. Was ich mitbringe: Kommunikationsstärke, eine schnelle Auffassungsgabe und eine strukturierte Arbeitsweise.",
          ],
-         facts=[("Abschlüsse", "Grafikdesignerin · Medienfachwirtin"), ("Sprachen", "Deutsch C2 · Englisch B2 · Ukrainisch"), ("Ort", "Walldorf, Rhein-Neckar")]),
+         facts=[("Schwerpunkt", "Grafikdesign · Print · Web"), ("Außerdem", "Malerei · Illustration"), ("Ort", "Walldorf, Rhein-Neckar")]),
     dict(id="werdegang", type="experience", nav="Werdegang", label="Werdegang", heading="Werdegang",
          start_label="2020 · Beginn der Ausbildung"),
     dict(id="kenntnisse", type="skills", nav="Kenntnisse", label="Kenntnisse", heading="Kenntnisse &amp; Sprachen"),
     dict(id="kontakt", type="contact", nav=None, label="Kontakt",
          heading="Lassen Sie uns <span class=\"accent\">sprechen.</span>",
-         text="Ich freue mich über Nachrichten zu Stellen in Grafikdesign und Medien. Am besten erreichen Sie mich per E-Mail oder über LinkedIn.",
+         text="Ich freue mich über Nachrichten zu Stellen im Grafikdesign. Am besten erreichen Sie mich per E-Mail oder über LinkedIn.",
          buttons=[(EMAIL, f"mailto:{EMAIL}", None), ("LinkedIn", LINKEDIN, "LinkedIn")]),
 ]
 
@@ -87,9 +97,9 @@ EARLIER = []
 MONOGRAM = {'jgs': 'JGS', 'praxis': 'GE'}
 
 SKILLS = [
-    ("Stärken", ["Kommunikationskompetenz", "Schnelle Auffassungsgabe", "Strukturierte Arbeitsweise"]),
-    ("Gestaltung", ["Adobe InDesign", "Adobe Illustrator", "Adobe Photoshop", "Procreate", "Figma (Grundkenntnisse)"]),
+    ("Design-Software", ["Adobe InDesign", "Adobe Illustrator", "Adobe Photoshop", "Procreate", "Figma (Grundkenntnisse)"]),
     ("Office", ["Microsoft Word", "Microsoft Excel", "Microsoft PowerPoint"]),
+    ("Stärken", ["Kommunikationskompetenz", "Schnelle Auffassungsgabe", "Strukturierte Arbeitsweise"]),
 ]
 EDUCATION = []          # shown in the Werdegang timeline instead
 CERTIFICATIONS = []

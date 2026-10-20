@@ -30,7 +30,7 @@ Follow the skill in `.claude/skills/portfolio-site-from-cv/SKILL.md` (discovery,
 
 ## Section types
 
-`about` (heading, paragraphs, facts), `impact` (IMPACT cards: `dict(where, metric, title, body, tags=[])`; a metric written as `before → after` renders as an arrow that draws itself on reveal, numbers in it count up, and cards get a pointer spotlight and tilt on desktop), `experience` (JOBS timeline + EARLIER compact stops, `era_label`, `start_label`; the first job pulses as current unless it sets `current=False`), `projects` (PROJECTS with sliders, `intro`, `cta`), `gallery` (GALLERY tiles, `wide`/`tall` spans, lightbox), `publications` (PUBLICATIONS rows), `skills` (SKILLS groups + EDUCATION, CERTIFICATIONS, LANGS), `contact` (heading, text, buttons, FOOTER). Hero without `HERO_PHOTOS` renders the text-only variant.
+`about` (heading, paragraphs, facts), `impact` (IMPACT cards: `dict(where, metric, title, body, tags=[])`; a metric written as `before → after` renders as an arrow that draws itself on reveal, numbers in it count up, and cards get a pointer spotlight and tilt on desktop), `experience` (JOBS timeline + EARLIER compact stops, `era_label`, `start_label`; the first job pulses as current unless it sets `current=False`), `projects` (PROJECTS with sliders, `intro`, `cta`), `gallery` (GALLERY tiles, or the section's own `items` for a second gallery; `wide`/`tall` spans, lightbox), `publications` (PUBLICATIONS rows), `skills` (SKILLS groups + EDUCATION, CERTIFICATIONS, LANGS), `contact` (heading, text, buttons, FOOTER). Hero without `HERO_PHOTOS` renders the text-only variant.
 
 ## Front end
 
