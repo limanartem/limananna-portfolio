@@ -14,17 +14,7 @@ HERE = os.path.dirname(os.path.abspath(__file__))
 OUT = os.path.join(HERE, "src", "assets", "logos")
 
 # slug -> candidate domains, tried in order (the slug must match build.py)
-COMPANIES = {
-    "cgm": ["cgm.com"],
-    "avira": ["avira.com"],
-    "gen": ["gendigital.com"],
-    "inhive": ["inhive.global", "de.inhive.group", "inhive.group"],
-    "verivox": ["verivox.de"],
-    "nix": ["n-ix.com"],
-    "edvantis": ["edvantis.com"],
-    "ukeess": ["ukeess.com"],
-    "leonorm": ["leonorm.com.ua", "leonorm.lviv.ua"],
-}
+COMPANIES = {}  # no employer logos yet; the timeline shows MONOGRAM text
 
 SOURCES = [
     "https://www.google.com/s2/favicons?domain={d}&sz=256",

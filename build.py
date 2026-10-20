@@ -55,6 +55,18 @@ def svg(name, size=16, sw=2, cls=''):
     return f'<svg{c} width="{size}" height="{size}" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="{sw}" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">{ICON_PATHS[name]}</svg>'
 
 ARROW = svg('arrow', sw=2.2)
+
+# Interface strings the chassis writes itself. A content file overrides any of them with UI = {...}
+# (e.g. for a German site); values are inserted as HTML, so escape & as &amp;.
+UI_DEFAULTS = dict(
+    lang='en', contact='Contact', today='today', back_to_top='Back to top ↑',
+    education='Education', certifications='Certifications &amp; training', languages='Languages',
+    view_full='View full size', view_repo='View on GitHub', private_repo='Private repository',
+    prev_slide='Previous slide', next_slide='Next slide', go_slide='Go to slide', screenshots='screenshots', photo='Photo',
+    prev_image='Previous image', next_image='Next image', close='Close', image_viewer='Image viewer',
+    open_menu='Open menu', close_menu='Close menu', main_nav='Main', technologies='Technologies',
+    theme='Colour theme', theme_system='Follow system theme', theme_light='Light theme', theme_dark='Dark theme',
+)
 BULLET = '<span class="bullet" aria-hidden="true"></span>'
 
 def ext(href, inner, cls='', label=''):
@@ -83,6 +95,7 @@ def render(C):
     sections = list(C.SECTIONS)
     ids = [s['id'] for s in sections]
     get = lambda name, default: getattr(C, name, default)
+    ui = {**UI_DEFAULTS, **get('UI', {})}
 
     # ---- icons and chips
     ICONS = json.load(open(os.path.join(SRC, "icons.json")))
@@ -133,7 +146,7 @@ def render(C):
 
     # ---- slides and projects
     def zoom_btn(src, caption, cls='zoom'):
-        return f'<button type="button" class="{cls}" aria-label="View full size: {e(caption)}"><img src="{src}" alt="{e(caption)}" loading="lazy"><span class="zoom-hint" aria-hidden="true">{svg("zoom", 16)}</span></button>'
+        return f'<button type="button" class="{cls}" aria-label="{ui['view_full']}: {e(caption)}"><img src="{src}" alt="{e(caption)}" loading="lazy"><span class="zoom-hint" aria-hidden="true">{svg("zoom", 16)}</span></button>'
     def slide_html(s, default_bg):
         bg, pad = s['bg'] or default_bg[0], s['pad'] or default_bg[1]
         if s['kind'] == 'img':
@@ -145,9 +158,9 @@ def render(C):
         rev = ' reverse' if i % 2 else ''
         links = ''
         if p.get('live'): links += ext(p['live'][0], e(p['live'][1]) + ARROW, 'btn btn-primary sm')
-        if p.get('repo'): links += ext(p['repo'], ico('GitHub', 15) + 'View on GitHub', 'btn btn-ghost sm')
-        if p.get('private'): links += f'<span class="mono private">{svg("lock", 14)}Private repository</span>'
-        dots = ''.join(f'<button type="button" class="dothit" data-go="{k}" aria-label="Go to slide {k+1}"><span class="dot{" on" if k==0 else ""}"></span></button>' for k in range(len(p['slides'])))
+        if p.get('repo'): links += ext(p['repo'], ico('GitHub', 15) + ui['view_repo'], 'btn btn-ghost sm')
+        if p.get('private'): links += f'<span class="mono private">{svg("lock", 14)}{ui['private_repo']}</span>'
+        dots = ''.join(f'<button type="button" class="dothit" data-go="{k}" aria-label="{ui['go_slide']} {k+1}"><span class="dot{" on" if k==0 else ""}"></span></button>' for k in range(len(p['slides'])))
         captions = json.dumps([s['caption'] for s in p['slides']])
         meta = ''.join(f'<span class="mono {c}">{e(v)}</span>' for c, v in (('status', p.get('status')), ('kind', p.get('kind'))) if v)
         return f'''<article class="project{rev}" data-carousel data-captions='{e(captions)}'>
@@ -156,11 +169,11 @@ def render(C):
 <h3 class="disp">{e(p['name'])}</h3>
 </div>
 <div class="pr-media" data-reveal="{'right' if i % 2 else 'left'}">
-<div class="carousel" role="region" aria-roledescription="carousel" aria-label="{e(p["name"])} screenshots">
+<div class="carousel" role="region" aria-roledescription="carousel" aria-label="{e(p["name"])} {ui['screenshots']}">
 <div class="slides">{''.join(slide_html(s, p.get('slide_bg', ('var(--surface)', '20px'))) for s in p['slides'])}</div>
 <div class="car-ui"><span class="mono counter">01 / {len(p['slides']):02d}</span>
-<div class="car-btns"><button type="button" class="sbtn" data-prev aria-label="Previous slide">{svg("prev", 18)}</button>
-<button type="button" class="sbtn" data-next aria-label="Next slide">{svg("next", 18)}</button></div></div>
+<div class="car-btns"><button type="button" class="sbtn" data-prev aria-label="{ui['prev_slide']}">{svg("prev", 18)}</button>
+<button type="button" class="sbtn" data-next aria-label="{ui['next_slide']}">{svg("next", 18)}</button></div></div>
 </div>
 <div class="car-foot"><span class="caption">{e(p['slides'][0]['caption'])}</span><div class="dots">{dots}</div></div>
 </div>
@@ -236,8 +249,8 @@ def render(C):
         return f'''<section id="{s['id']}" class="sec alt">
 <div class="wrap stack">{sticky(s['id'])}<div data-reveal><h2 class="disp">{s['heading']}</h2></div>
 <ol class="timeline">
-<li class="tl-mark" aria-hidden="true"><span class="mono">today</span></li>
-{''.join(job_html(j, i == 0) for i, j in enumerate(jobs))}
+<li class="tl-mark" aria-hidden="true"><span class="mono">{ui['today']}</span></li>
+{''.join(job_html(j, j.get('current', i == 0)) for i, j in enumerate(jobs))}
 {era}
 {''.join(early_html(*row) for row in earlier)}
 {end}
@@ -292,9 +305,9 @@ def render(C):
         edu, cert, langs = get('EDUCATION', []), get('CERTIFICATIONS', []), get('LANGS', [])
         cards = ''.join(f'<div data-reveal style="--d:{(k%3)*0.1:.2f}s"><div class="card skill"><h3 class="disp">{e(t)}</h3><div class="chips">{chips(items)}</div></div></div>' for k, (t, items) in enumerate(groups))
         cols = []
-        if edu: cols.append('<div class="meta-col" data-reveal><span class="mono accent">Education</span>' + ''.join(f'<div><div class="r">{r}</div><div class="b">{b}</div></div>' for r, b in edu) + '</div>')
-        if cert: cols.append('<div class="meta-col" data-reveal style="--d:.1s"><span class="mono accent">Certifications &amp; training</span>' + ''.join(f'<div><div class="r">{r}</div><div class="b">{b}</div></div>' for r, b in cert) + '</div>')
-        if langs: cols.append('<div class="meta-col" data-reveal style="--d:.2s"><span class="mono accent">Languages</span>' + ''.join(f'<div class="lang"><div class="lang-h"><span class="r">{e(n)}</span><span class="mono">{e(l)}</span></div><div class="bar"><div style="width:{p}%"></div></div></div>' for n, l, p in langs) + '</div>')
+        if edu: cols.append(f'<div class="meta-col" data-reveal><span class="mono accent">{ui['education']}</span>' + ''.join(f'<div><div class="r">{r}</div><div class="b">{b}</div></div>' for r, b in edu) + '</div>')
+        if cert: cols.append(f'<div class="meta-col" data-reveal style="--d:.1s"><span class="mono accent">{ui['certifications']}</span>' + ''.join(f'<div><div class="r">{r}</div><div class="b">{b}</div></div>' for r, b in cert) + '</div>')
+        if langs: cols.append(f'<div class="meta-col" data-reveal style="--d:.2s"><span class="mono accent">{ui['languages']}</span>' + ''.join(f'<div class="lang"><div class="lang-h"><span class="r">{e(n)}</span><span class="mono">{e(l)}</span></div><div class="bar"><div style="width:{p}%"></div></div></div>' for n, l, p in langs) + '</div>')
         if not (groups or cols): return ''
         return f'''<section id="{s['id']}" class="sec alt">
 <div class="wrap stack">{sticky(s['id'])}<div data-reveal><h2 class="disp">{s['heading']}</h2></div>
@@ -313,7 +326,7 @@ def render(C):
 <p class="lede" data-reveal style="--d:.2s">{e(s['text'])}</p>
 <div class="btns contact-btns" data-reveal style="--d:.3s">{btns}</div>
 <footer><span class="mono">{get('FOOTER', '')}</span>
-<span class="foot-links">{foot_links}<a href="#top" class="mono uline">Back to top ↑</a></span></footer>
+<span class="foot-links">{foot_links}<a href="#top" class="mono uline">{ui['back_to_top']}</a></span></footer>
 </div>
 </section>'''
 
@@ -330,7 +343,7 @@ def render(C):
     # ---- hero
     hero_photos = get('HERO_PHOTOS', [])
     photos = ''.join(f'<div class="hero-photo{" on" if i == 0 else ""}" style="background-image:url({asset(src)})" role="img" aria-label="{e(alt)}"></div>' for i, (src, alt) in enumerate(hero_photos))
-    hctl = '' if len(hero_photos) < 2 else '<div class="hctl"><span class="mono hcap">01 / ' + f'{len(hero_photos):02d}' + '</span><div class="hdots">' + ''.join(f'<button type="button" class="hdot{" on" if i == 0 else ""}" data-i="{i}" aria-label="Photo {i + 1}"><i></i></button>' for i in range(len(hero_photos))) + '</div></div>'
+    hctl = '' if len(hero_photos) < 2 else '<div class="hctl"><span class="mono hcap">01 / ' + f'{len(hero_photos):02d}' + '</span><div class="hdots">' + ''.join(f'<button type="button" class="hdot{" on" if i == 0 else ""}" data-i="{i}" aria-label="{ui['photo']} {i + 1}"><i></i></button>' for i in range(len(hero_photos))) + '</div></div>'
     hero_btns = ''.join(link_btn(l, h, i, 'btn btn-primary' if k == 0 else 'btn btn-ghost') for k, (l, h, i) in enumerate(P['links']))
     if P.get('hero_cta'): hero_btns += f'<a class="btn btn-ghost" href="{P["hero_cta"][1]}">{e(P["hero_cta"][0])}</a>'
     badge = f'<div class="in mono badge"><span class="pulse"></span>{e(P["badge"])}</div>' if P.get('badge') else ''
@@ -338,22 +351,24 @@ def render(C):
     stats = get('STATS', [])
     stats_html = ('<div class="stats-strip"><div class="wrap stats">' + ''.join(f'<div class="stat"><span class="disp n">{e(n)}{("<span class=\"accent\">" + e(x) + "</span>") if x else ""}</span><span class="l">{l}</span></div>' for n, x, l in stats) + '</div></div>') if stats else ''
     marquee = get('MARQUEE', [])
-    marquee_html = ('<div class="marquee" aria-label="Technologies"><div class="track disp">' + ''.join(f'<span>{ico(t, 26)}{e(t)}<i aria-hidden="true">◆</i></span>' for t in marquee * 2) + '</div></div>') if marquee else ''
+    marquee_html = (f'<div class="marquee" aria-label="{ui["technologies"]}"><div class="track disp">' + ''.join(f'<span>{ico(t, 26)}{e(t)}<i aria-hidden="true">◆</i></span>' for t in marquee * 2) + '</div></div>') if marquee else ''
     first_link = P['links'][0] if P.get('links') else None
     mm_links = ''.join(ext(h, (ico(i, 16) if i else '') + e(l)) for l, h, i in P['links'])
     og_image = f'{SITE_URL}{asset(hero_photos[0][0])}' if hero_photos else ''
     hero_class = 'hero' if hero_photos else 'hero hero-text-only'
     contact_id = next((s['id'] for s in sections if s['type'] == 'contact'), None)
-    contact_btn = f'<a class="btn btn-primary sm nav-contact" href="#{contact_id}">Contact</a>' if contact_id else ''
-    mm_contact = f'<a href="#{contact_id}" class="btn btn-primary">Contact</a>' if contact_id else ''
+    contact_btn = f'<a class="btn btn-primary sm nav-contact" href="#{contact_id}">{ui['contact']}</a>' if contact_id else ''
+    mm_contact = f'<a href="#{contact_id}" class="btn btn-primary">{ui['contact']}</a>' if contact_id else ''
 
     scheme = T.get('scheme', 'system')
-    theme_vars = f":root{{--accent:{T['accent_dark']};--font-display:'{T['display_font']}';--font-body:'{T['body_font']}';--font-mono:'{T['mono_font']}'}}" \
-                 f":root[data-theme=\"light\"]{{--accent:{T['accent_light']}}}@media (prefers-color-scheme: light){{:root:not([data-theme=\"dark\"]){{--accent:{T['accent_light']}}}}}"
+    def soft(h, a):  # translucent accent tint, e.g. for chip and badge backgrounds
+        h = h.lstrip('#'); return f"rgba({int(h[0:2], 16)},{int(h[2:4], 16)},{int(h[4:6], 16)},{a})"
+    theme_vars = f":root{{--accent:{T['accent_dark']};--accent-soft:{soft(T['accent_dark'], .14)};--font-display:'{T['display_font']}';--font-body:'{T['body_font']}';--font-mono:'{T['mono_font']}'}}" \
+                 f":root[data-theme=\"light\"]{{--accent:{T['accent_light']};--accent-soft:{soft(T['accent_light'], .10)}}}@media (prefers-color-scheme: light){{:root:not([data-theme=\"dark\"]){{--accent:{T['accent_light']};--accent-soft:{soft(T['accent_light'], .10)}}}}}"
 
     SPRITE = '<!--SPRITE-->'
     return f'''<!doctype html>
-<html lang="en" data-default-theme="{scheme}">
+<html lang="{ui['lang']}" data-default-theme="{scheme}">
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -378,19 +393,19 @@ document.documentElement.setAttribute('data-js','');
 </head>
 <body>
 {SPRITE}<header class="top">
-<nav aria-label="Main">
+<nav aria-label="{ui['main_nav']}">
 <a href="#top" class="brand disp"><span class="brand-mark">{e(P['initials'])}</span><span>{e(P['name'])}</span></a>
 <div class="navlinks">
 {nav("navlink")}
 </div>
 <div class="nav-right">
-<div class="seg" role="group" aria-label="Colour theme">
-<button type="button" class="segbtn" data-theme-set="" title="System" aria-label="Follow system theme">{svg("system", 16)}</button>
-<button type="button" class="segbtn" data-theme-set="light" title="Light" aria-label="Light theme">{svg("light", 16)}</button>
-<button type="button" class="segbtn" data-theme-set="dark" title="Dark" aria-label="Dark theme">{svg("dark", 16)}</button>
+<div class="seg" role="group" aria-label="{ui['theme']}">
+<button type="button" class="segbtn" data-theme-set="" title="System" aria-label="{ui['theme_system']}">{svg("system", 16)}</button>
+<button type="button" class="segbtn" data-theme-set="light" title="{ui['theme_light']}" aria-label="{ui['theme_light']}">{svg("light", 16)}</button>
+<button type="button" class="segbtn" data-theme-set="dark" title="{ui['theme_dark']}" aria-label="{ui['theme_dark']}">{svg("dark", 16)}</button>
 </div>
 {contact_btn}
-<button type="button" class="burger" aria-label="Open menu" aria-expanded="false" aria-controls="mobile-menu">
+<button type="button" class="burger" aria-label="{ui['open_menu']}" data-label-open="{ui['open_menu']}" data-label-close="{ui['close_menu']}" aria-expanded="false" aria-controls="mobile-menu">
 {svg("menu", 20, cls="i-open")}
 {svg("close", 20, cls="i-close")}
 </button>
@@ -427,11 +442,11 @@ document.documentElement.setAttribute('data-js','');
 
 {''.join(rendered)}
 </main>
-<div class="lightbox" hidden role="dialog" aria-modal="true" aria-label="Image viewer">
-<button type="button" class="lb-btn lb-close" data-lb-close aria-label="Close">{svg("close", 20)}</button>
-<button type="button" class="lb-btn lb-prev" data-lb-prev aria-label="Previous image">{svg("prev", 22)}</button>
+<div class="lightbox" hidden role="dialog" aria-modal="true" aria-label="{ui['image_viewer']}">
+<button type="button" class="lb-btn lb-close" data-lb-close aria-label="{ui['close']}">{svg("close", 20)}</button>
+<button type="button" class="lb-btn lb-prev" data-lb-prev aria-label="{ui['prev_image']}">{svg("prev", 22)}</button>
 <div class="lb-stage"><img src="" alt=""></div>
-<button type="button" class="lb-btn lb-next" data-lb-next aria-label="Next image">{svg("next", 22)}</button>
+<button type="button" class="lb-btn lb-next" data-lb-next aria-label="{ui['next_image']}">{svg("next", 22)}</button>
 <div class="lb-foot"><span class="lb-cap"></span><span class="mono lb-count"></span></div>
 </div>
 <script src="{asset("app.js")}"></script>
