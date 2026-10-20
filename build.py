@@ -9,8 +9,8 @@ import html, os, re, shutil, json, importlib.util, sys
 HERE = os.path.dirname(os.path.abspath(__file__))
 SRC = os.path.join(HERE, "src")
 OUT = os.path.join(HERE, "dist")
-# Absolute site URL, used where crawlers need full URLs (og:image). The Pages workflow passes it in.
-SITE_URL = os.environ.get("SITE_URL", "https://limanartem.github.io/portfolio/").rstrip("/") + "/"
+# Absolute site URL, used where crawlers need full URLs (canonical, og:url, og:image, JSON-LD). The Pages workflow passes it in.
+SITE_URL = os.environ.get("SITE_URL", "https://limanartem.github.io/limananna-portfolio/").rstrip("/") + "/"
 
 def _hash(path):
     import hashlib
@@ -59,7 +59,7 @@ ARROW = svg('arrow', sw=2.2)
 # Interface strings the chassis writes itself. A content file overrides any of them with UI = {...}
 # (e.g. for a German site); values are inserted as HTML, so escape & as &amp;.
 UI_DEFAULTS = dict(
-    lang='en', contact='Contact', today='today', back_to_top='Back to top ↑',
+    lang='en', locale='en_US', contact='Contact', today='today', back_to_top='Back to top ↑',
     education='Education', certifications='Certifications &amp; training', languages='Languages',
     view_full='View full size', view_repo='View on GitHub', private_repo='Private repository',
     prev_slide='Previous slide', next_slide='Next slide', go_slide='Go to slide', screenshots='screenshots', photo='Photo',
@@ -356,6 +356,13 @@ def render(C):
     first_link = P['links'][0] if P.get('links') else None
     mm_links = ''.join(ext(h, (ico(i, 16) if i else '') + e(l)) for l, h, i in P['links'])
     og_image = f'{SITE_URL}{asset(hero_photos[0][0])}' if hero_photos else ''
+    # schema.org Person for search engines; "</" is escaped so the JSON cannot close the script tag
+    person_ld = {'@context': 'https://schema.org', '@type': 'Person', 'name': P['name'], 'url': SITE_URL,
+                 'sameAs': [h for _, h, _ in P.get('links', []) if h.startswith('http')]}
+    if P.get('job_title'): person_ld['jobTitle'] = P['job_title']
+    if P.get('location'): person_ld['address'] = {'@type': 'PostalAddress', 'addressLocality': P['location']}
+    if og_image: person_ld['image'] = og_image
+    person_ld = json.dumps(person_ld, ensure_ascii=False).replace('</', '<\\/')
     hero_class = 'hero' if hero_photos else 'hero hero-text-only'
     contact_id = next((s['id'] for s in sections if s['type'] == 'contact'), None)
     contact_btn = f'<a class="btn btn-primary sm nav-contact" href="#{contact_id}">{ui['contact']}</a>' if contact_id else ''
@@ -378,8 +385,12 @@ def render(C):
 <meta property="og:title" content="{P['title']}">
 <meta property="og:description" content="{P['description']}">
 <meta property="og:type" content="website">
-{f'<meta property="og:image" content="{og_image}">' if og_image else ''}
+<meta property="og:site_name" content="{e(P['name'])}">
+<meta property="og:locale" content="{ui['locale']}">
+{f'<meta property="og:image" content="{og_image}">' + chr(10) + f'<meta property="og:image:alt" content="{e(hero_photos[0][1])}">' if og_image else ''}
 <meta property="og:url" content="{SITE_URL}">
+<link rel="canonical" href="{SITE_URL}">
+<script type="application/ld+json">{person_ld}</script>
 <meta name="twitter:card" content="{'summary_large_image' if og_image else 'summary'}">
 <link rel="icon" href="{asset("assets/favicon.svg")}" type="image/svg+xml">
 <link rel="preconnect" href="https://fonts.googleapis.com">

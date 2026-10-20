@@ -17,6 +17,7 @@ PERSON = dict(
     lede="Ich gestalte Speisekarten, Websites und alles dazwischen, in InDesign, Illustrator und Photoshop. Ausgebildet an der Johannes-Gutenberg-Schule Heidelberg, dort auch Medienfachwirtin (Bachelor Professional).",
     meta=["Walldorf · Rhein-Neckar", "DE C2 · EN B2 · UA Muttersprache"],
     location="Walldorf",
+    job_title="Grafikdesignerin",                   # schema.org jobTitle for search engines; optional
     # profile links: (label, url, icon name from src/icons.json or None). The first is the primary button.
     links=[("E-Mail schreiben", f"mailto:{EMAIL}", None), ("LinkedIn", LINKEDIN, "LinkedIn")],
     hero_cta=("Arbeiten ansehen", "#arbeiten"),     # third hero button; None hides it
@@ -24,7 +25,7 @@ PERSON = dict(
 
 # German interface strings for the chassis (see UI_DEFAULTS in build.py)
 UI = dict(
-    lang='de', contact='Kontakt', today='heute', back_to_top='Nach oben ↑',
+    lang='de', locale='de_DE', contact='Kontakt', today='heute', back_to_top='Nach oben ↑',
     education='Ausbildung', certifications='Zertifikate &amp; Weiterbildung', languages='Sprachen',
     view_full='Vergrößern', view_repo='Auf GitHub ansehen', private_repo='Privates Repository',
     prev_slide='Vorheriges Bild', next_slide='Nächstes Bild', go_slide='Zu Bild', screenshots='Bilder', photo='Foto',

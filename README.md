@@ -1,6 +1,10 @@
-# Artem Liman — portfolio
+# Anna Liman · Portfolio
 
-Static portfolio site, built by `build.py` and deployed to GitHub Pages by the workflow in `.github/workflows/pages.yml`.
+Portfolio of Anna Liman, staatlich geprüfte Grafikdesignerin from Walldorf: graphic design, paintings, career path and contact, in German.
+Live at https://limanartem.github.io/limananna-portfolio/ once Pages is enabled (see *One-time setup*).
+
+Static site, built by `build.py` and deployed to GitHub Pages by the workflow in `.github/workflows/pages.yml`.
+Made from the [limanartem/portfolio](https://github.com/limanartem/portfolio) template.
 
 ```
 build.py                 renders a content file into dist/ (index.html + content-hashed assets)
@@ -8,7 +12,7 @@ content.py               everything about the person: sections, copy, jobs, proj
 examples/                content files for other profile types (CONTENT=examples/<file>.py python3 build.py)
 src/styles.css           styling, light/dark themes
 src/app.js               theme selector, scroll reveal, sliders (autoplay)
-src/assets/              portrait, project screenshots, favicon
+src/assets/              hero portraits (hero/), design work and paintings (work/), favicon
 src/robots.txt           copied to the site root as-is (CNAME too, if present)
 ```
 
@@ -49,7 +53,10 @@ The full method (what to collect, which sections to use for which profession, co
 ## Editing
 
 - Text and content: `content.py`. `build.py` holds the HTML and the per-section renderers.
+- Work and paintings: put the image in `src/assets/work/` and add a `dict(src=..., caption=...)` to `GALLERY` (design work) or to the `items` of the `malerei` section; `wide=True` / `tall=True` make a tile span two columns or rows.
+- Hero portraits: `HERO_PHOTOS`; the first one is also the link preview image (`og:image`), so keep it a JPEG.
+- Interface wording (German labels, aria labels, `og:locale`): the `UI` dict.
 - Project screenshots: drop the image in `src/assets/` and reference it as `img('assets/<file>', 'caption')` in that project's `slides` list. Background and padding come from the project's `slide_bg=(bg, padding)`, or pass them to `img()` to override one slide.
-- Sections, nav and the `01 / …` labels: the `SECTIONS` list. Profile links: `LINKEDIN` / `GITHUB`. Outline icons: `ICON_PATHS`.
+- Sections, nav and the `01 / …` labels: the `SECTIONS` list. Profile links: `PERSON['links']`. Outline icons: `ICON_PATHS`.
 - Colours, fonts, spacing: the CSS variables at the top of `src/styles.css`.
 - Preview locally: `python3 build.py && python3 -m http.server -d dist 8000`, then open `http://localhost:8000`.
