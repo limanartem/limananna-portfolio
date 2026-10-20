@@ -6,6 +6,7 @@ Each section entry: dict(id=..., type=<renderer>, nav=<nav label or None>, label
 Types: about, impact, experience, projects, gallery, publications, skills, contact.
 """
 EMAIL = "limananna2004@gmail.com"
+LINKEDIN = "https://www.linkedin.com/in/anna-liman-a863981b3/"
 
 PERSON = dict(
     name="Anna Liman", first="Anna", last="Liman", initials="AL",
@@ -17,7 +18,7 @@ PERSON = dict(
     meta=["Walldorf · Rhein-Neckar", "DE C2 · EN B2 · UA Muttersprache"],
     location="Walldorf",
     # profile links: (label, url, icon name from src/icons.json or None). The first is the primary button.
-    links=[("E-Mail schreiben", f"mailto:{EMAIL}", None)],
+    links=[("E-Mail schreiben", f"mailto:{EMAIL}", None), ("LinkedIn", LINKEDIN, "LinkedIn")],
     hero_cta=("Arbeiten ansehen", "#arbeiten"),     # third hero button; None hides it
 )
 
@@ -39,14 +40,14 @@ THEME = dict(
     google_fonts="family=Newsreader:opsz,wght@6..72,500;6..72,600;6..72,700&family=Manrope:wght@400;500;600&family=DM+Mono:wght@400;500",
 )
 
-HERO_PHOTOS = []   # text-only hero until a higher-resolution portrait arrives
+HERO_PHOTOS = [('assets/hero/anna.webp', 'Porträt von Anna Liman')]
 STATS = []
 MARQUEE = []
 
 SECTIONS = [
     dict(id="arbeiten", type="gallery", nav="Arbeiten", label="Arbeiten",
          heading="Ausgewählte Arbeiten",
-         intro="Eine Auswahl aus Ausbildung und Projekten. Zum Vergrößern ein Bild anklicken."),
+         intro="Veg & Velvet, ein Café: Speisekarte und Startseite der Website. Zum Vergrößern ein Bild anklicken."),
     dict(id="ueber-mich", type="about", nav="Über mich", label="Über mich",
          heading="Gestalten und planen.",
          paragraphs=[
@@ -59,17 +60,13 @@ SECTIONS = [
     dict(id="kenntnisse", type="skills", nav="Kenntnisse", label="Kenntnisse", heading="Kenntnisse &amp; Sprachen"),
     dict(id="kontakt", type="contact", nav=None, label="Kontakt",
          heading="Lassen Sie uns <span class=\"accent\">sprechen.</span>",
-         text="Ich freue mich über Nachrichten zu Stellen in Grafikdesign und Medien. Am besten erreichen Sie mich per E-Mail.",
-         buttons=[(EMAIL, f"mailto:{EMAIL}", None)]),
+         text="Ich freue mich über Nachrichten zu Stellen in Grafikdesign und Medien. Am besten erreichen Sie mich per E-Mail oder über LinkedIn.",
+         buttons=[(EMAIL, f"mailto:{EMAIL}", None), ("LinkedIn", LINKEDIN, "LinkedIn")]),
 ]
 
-GALLERY = [  # placeholders until the real work arrives: replace src and caption, then delete the SVGs
-    dict(src="assets/work/platzhalter-1.svg", caption="Platzhalter: Arbeit 1", wide=True),
-    dict(src="assets/work/platzhalter-2.svg", caption="Platzhalter: Arbeit 2"),
-    dict(src="assets/work/platzhalter-3.svg", caption="Platzhalter: Arbeit 3", tall=True),
-    dict(src="assets/work/platzhalter-4.svg", caption="Platzhalter: Arbeit 4"),
-    dict(src="assets/work/platzhalter-5.svg", caption="Platzhalter: Arbeit 5"),
-    dict(src="assets/work/platzhalter-6.svg", caption="Platzhalter: Arbeit 6", wide=True),
+GALLERY = [
+    dict(src="assets/work/veg-velvet-menu.jpg", caption="Veg & Velvet: Speisekarte mit Getränken, Kuchen und Snacks", wide=True, tall=True),
+    dict(src="assets/work/veg-velvet-website.jpg", caption="Veg & Velvet: Startseite der Website mit dem Sommer-Menü", wide=True, tall=True),
 ]
 
 JOBS = [
@@ -91,7 +88,8 @@ MONOGRAM = {'jgs': 'JGS', 'praxis': 'GE'}
 
 SKILLS = [
     ("Stärken", ["Kommunikationskompetenz", "Schnelle Auffassungsgabe", "Strukturierte Arbeitsweise"]),
-    ("Programme", ["Platzhalter: Programme ergänzen"]),
+    ("Gestaltung", ["Adobe InDesign", "Adobe Illustrator", "Adobe Photoshop", "Procreate", "Figma (Grundkenntnisse)"]),
+    ("Office", ["Microsoft Word", "Microsoft Excel", "Microsoft PowerPoint"]),
 ]
 EDUCATION = []          # shown in the Werdegang timeline instead
 CERTIFICATIONS = []
