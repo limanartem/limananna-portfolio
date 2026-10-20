@@ -30,7 +30,7 @@
   function setMenu(open) {
     if (!burger || !menu) return;
     burger.setAttribute('aria-expanded', open ? 'true' : 'false');
-    burger.setAttribute('aria-label', open ? 'Close menu' : 'Open menu');
+    burger.setAttribute('aria-label', burger.getAttribute(open ? 'data-label-close' : 'data-label-open') || (open ? 'Close menu' : 'Open menu'));
     document.documentElement.classList.toggle('menu-open', open);
     if (open) menu.removeAttribute('hidden'); else menu.setAttribute('hidden', '');
   }
